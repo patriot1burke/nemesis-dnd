@@ -1,0 +1,1 @@
+(notation (expression (expression (expression (expression (atom (dice 2 d 10))) + (expression (atom (variable level)))) + (expression (atom (variable proficiency)))) + (expression (atom (number 1)))) <EOF>)

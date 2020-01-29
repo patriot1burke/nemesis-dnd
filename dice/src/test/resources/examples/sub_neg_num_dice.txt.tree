@@ -1,0 +1,1 @@
+(notation (expression (expression - (atom (number 1))) - (expression (atom (dice 1 d 6)))) <EOF>)
