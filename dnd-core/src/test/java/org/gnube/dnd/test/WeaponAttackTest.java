@@ -1,12 +1,10 @@
 package org.gnube.dnd.test;
 
-import org.gnube.dice.visitor.DiceRoller;
 import org.gnube.dnd.api.Attack;
 import org.gnube.dnd.api.AttackAction;
 import org.gnube.dnd.api.AttackDamage;
 import org.gnube.dnd.api.PlayerCharacter;
 import org.gnube.dnd.api.Weapon;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -27,7 +25,7 @@ public class WeaponAttackTest {
 
         pc = new PlayerCharacter() {
             @Override
-            protected boolean isCrit(int value) {
+            public boolean isCrit(int value) {
                 return value > 10;
             }
         };
@@ -51,9 +49,9 @@ public class WeaponAttackTest {
     }
 
     void performAttack(AttackAction action) {
-        Attack attack = pc.attack(action);
+        Attack attack = action.attack();
         System.out.println(action.getName() + " attack[" + attack.getTotal().getTotal() + "]: " + attack.getDice() + "=" + attack.getTotal().getDescription());
-        AttackDamage damage = pc.damage(attack);
+        AttackDamage damage = action.damage(attack.isCrit());
         System.out.println("damage: " + (damage.isCrit() ? "*" :"") + damage.getTotal());
         for (AttackDamage.Damage dmg : damage.getDamage()) {
             System.out.println("\t" + (dmg.getName() == null ? "" : dmg.getName()) + " " + dmg.getType() + "[" + dmg.getTotal() + "]: " + dmg.getExpression() + " = " + dmg.getDescription());

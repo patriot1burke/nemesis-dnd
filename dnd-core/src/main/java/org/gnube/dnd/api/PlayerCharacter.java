@@ -101,54 +101,7 @@ public class PlayerCharacter {
         this.charisma = charisma;
     }
 
-    protected boolean isCrit(int value) {
+    public boolean isCrit(int value) {
         return value == 20;
     }
-
-    public Attack attack(AttackAction action) {
-        String attackDice = "1d20";
-        if (action.getAttackDice() != null) attackDice += action.getAttackDice();
-        DiceRoller.Total roll = new PlayerCharacterRoller(this).roll(attackDice);
-        return new Attack(attackDice, roll, action, isCrit(roll.getTotal()));
-    }
-
-    public AttackDamage damage(Attack attack) {
-        AttackDamage damage = new AttackDamage();
-        damage.crit = attack.isCrit();
-        for (DamageApplication app : attack.getAction().getDamage()) {
-            DiceRoller.Total damageDice = new PlayerCharacterRoller(this).roll(app.damageDice);
-
-            AttackDamage.Damage subDmg = new AttackDamage.Damage();
-            subDmg.total = damageDice.getTotal();
-            subDmg.expression = damageDice.getExpression();
-            subDmg.description = damageDice.getDescription();
-
-            if (attack.isCrit() && !damageDice.getDiceRolls().isEmpty()) {
-                subDmg.expression += "+Crit(";
-                subDmg.description += "+Crit(";
-                List<DiceRoller.DiceRoll> critRolls = new LinkedList<>();
-                boolean firstRoll = true;
-                for (DiceRoller.DiceRoll r : damageDice.getDiceRolls()) {
-                    DiceRoller.DiceRoll newRoll = r.newRoll();
-                    subDmg.total += newRoll.getTotal();
-                    critRolls.add(newRoll);
-                    if (firstRoll) firstRoll = false;
-                    else {
-                        subDmg.expression += "+";
-                        subDmg.description += "+";
-                    }
-                    subDmg.expression += newRoll.getDice().getExpression();
-                    subDmg.description += newRoll.getDescription();
-                }
-                subDmg.expression += ")";
-                subDmg.description += ")";
-            }
-            subDmg.setType(app.getDamageType());
-            subDmg.setName(app.getName());
-            damage.damage.add(subDmg);
-            damage.total += subDmg.total;
-        }
-        return damage;
-    }
-
 }

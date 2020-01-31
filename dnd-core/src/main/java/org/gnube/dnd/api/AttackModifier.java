@@ -41,7 +41,7 @@ public class AttackModifier {
         this.additionalDamage = additionalDamage;
     }
 
-    public boolean isApplicable(Action action) {
+    public boolean isApplicable(Effect action) {
         return true;
     }
 }

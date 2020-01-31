@@ -1,6 +1,6 @@
 package org.gnube.dnd.api;
 
-public class Weapon implements InventoryItem, ActionSource {
+public class Weapon implements InventoryItem {
     String name;
     String type;
     boolean martial;
@@ -146,8 +146,8 @@ public class Weapon implements InventoryItem, ActionSource {
 
     private void addMelee(PlayerCharacter pc, String source, String dmgDice, boolean mainhand) {
         AttackAction attackRoller = new AttackAction();
+        attackRoller.setPc(pc);
         attackRoller.setName(source);
-        attackRoller.setSource(this);
         String attackDice = "";
         if (proficient(pc)) attackDice += "+PROF";
         String attribute = "+STR";
@@ -165,8 +165,8 @@ public class Weapon implements InventoryItem, ActionSource {
     }
     private void addRange(PlayerCharacter pc, String source, String dmgDice) {
         AttackAction attackRoller = new AttackAction();
+        attackRoller.setPc(pc);
         attackRoller.setName(source);
-        attackRoller.setSource(this);
         String attackDice = "";
         if (proficient(pc)) attackDice += "+PROF";
         attackDice +="+DEX";
