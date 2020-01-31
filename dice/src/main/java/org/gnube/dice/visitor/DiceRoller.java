@@ -20,18 +20,20 @@ import java.util.Stack;
 
 public class DiceRoller {
     public static Random random = new Random();
-    List<DiceRole> diceRoles = new LinkedList<>();
+    List<DiceRoll> diceRoles = new LinkedList<>();
     Stack<Result> results = new Stack<>();
 
     public static class Total {
+        String expression;
         int total;
         String description;
-        List<DiceRole> roles;
+        List<DiceRoll> roles;
 
-        public Total(int total, String description, List<DiceRole> roles) {
+        public Total(String expression, int total, String description, List<DiceRoll> roles) {
             this.total = total;
             this.description = description;
             this.roles = roles;
+            this.expression = expression;
         }
 
         public int getTotal() {
@@ -42,30 +44,34 @@ public class DiceRoller {
             return description;
         }
 
-        public List<DiceRole> getRoles() {
+        public String getExpression() {
+            return expression;
+        }
+
+        public List<DiceRoll> getDiceRolls() {
             return roles;
         }
     }
 
-    public Total roll(String expression) {
-        DiceExpression dice = NotationTransformer.transform(expression);
-        DiceInterpreter.depth(dice, new Roller());
-        Result top = results.pop();
-        return new Total(top.total, top.description, diceRoles);
-    }
-
-    protected class DiceRole {
+    public class DiceRoll {
         Dice dice;
         List<Integer> rolls = new LinkedList<>();
         int total;
+        String description;
 
-        public DiceRole(Dice dice) {
+        public DiceRoll(Dice dice) {
             this.dice = dice;
+            this.description = "(";
             for (int i = 0; i < dice.getQuantity(); i++) {
                 int roll = rollDie(dice.getSides());
                 rolls.add(roll);
                 total += roll;
+                if (i > 0) {
+                    this.description += "+";
+                }
+                this.description += Integer.toString(roll);
             }
+            this.description += ")";
         }
 
         public Dice getDice() {
@@ -79,9 +85,24 @@ public class DiceRoller {
         public int getTotal() {
             return total;
         }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public DiceRoll newRoll() {
+            return new DiceRoll(dice);
+        }
     }
 
-    protected int rollDie(int sides) {
+    public Total roll(String expression) {
+        DiceExpression dice = NotationTransformer.transform(expression);
+        DiceInterpreter.depth(dice, new Roller());
+        Result top = results.pop();
+        return new Total(expression, top.total, top.description, diceRoles);
+    }
+
+   protected int rollDie(int sides) {
         return random.nextInt(sides) + 1;
     }
 
@@ -92,14 +113,6 @@ public class DiceRoller {
         public Result(int total, String description) {
             this.total = total;
             this.description = description;
-        }
-
-        public int getTotal() {
-            return total;
-        }
-
-        public String getDescription() {
-            return description;
         }
     }
 
@@ -150,21 +163,9 @@ public class DiceRoller {
 
         @Override
         public void dice(Dice exp) {
-            DiceRole role = new DiceRole(exp);
-            diceRoles.add(role);
-            String result = "(";
-            boolean first = true;
-            for (Integer i : role.rolls) {
-                if (first) {
-                    first = false;
-                }
-                else {
-                    result += "+";
-                }
-                result = result + i;
-            }
-            result += ")";
-            results.push(new Result(role.total, result));
+            DiceRoll roll = new DiceRoll(exp);
+            diceRoles.add(roll);
+            results.push(new Result(roll.total, roll.getDescription()));
         }
 
         @Override

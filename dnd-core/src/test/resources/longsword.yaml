@@ -1,0 +1,5 @@
+type: Longsword
+martial: true
+oneHanded: 1d8
+twoHanded: 1d10
+damageType: slashing
