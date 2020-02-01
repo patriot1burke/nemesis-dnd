@@ -145,7 +145,7 @@ public class Weapon implements InventoryItem {
     }
 
     private void addMelee(PlayerCharacter pc, String source, String dmgDice, boolean mainhand) {
-        AttackAction attackRoller = new AttackAction();
+        WeaponAttackAction attackRoller = new WeaponAttackAction();
         attackRoller.setPc(pc);
         attackRoller.setName(source);
         String attackDice = "";
@@ -157,14 +157,14 @@ public class Weapon implements InventoryItem {
         attackDice += attribute;
         if (mainhand) dmgDice += attribute;
         attackRoller.setAttackDice(attackDice);
-        DamageApplication dmg = new DamageApplication();
+        DamageEffect dmg = new DamageEffect();
         dmg.setDamageType(damageType);
-        dmg.setDamageDice(dmgDice);
+        dmg.setDice(dmgDice);
         attackRoller.getDamage().add(dmg);
         pc.actions.put(source, attackRoller);
     }
     private void addRange(PlayerCharacter pc, String source, String dmgDice) {
-        AttackAction attackRoller = new AttackAction();
+        WeaponAttackAction attackRoller = new WeaponAttackAction();
         attackRoller.setPc(pc);
         attackRoller.setName(source);
         String attackDice = "";
@@ -172,10 +172,10 @@ public class Weapon implements InventoryItem {
         attackDice +="+DEX";
         dmgDice += "+DEX";
         attackRoller.setAttackDice(attackDice);
-        DamageApplication dmg = new DamageApplication();
+        DamageEffect dmg = new DamageEffect();
         dmg.setName(type);
         dmg.setDamageType(damageType);
-        dmg.setDamageDice(dmgDice);
+        dmg.setDice(dmgDice);
         attackRoller.getDamage().add(dmg);
         pc.actions.put(source, attackRoller);
     }

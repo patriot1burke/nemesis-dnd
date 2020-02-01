@@ -1,0 +1,4 @@
+name: Sleep
+slot: 1
+dice: 5d8
+dicePerSlot: 2d8

@@ -1,10 +1,10 @@
 package org.gnube.dnd.test;
 
 import org.gnube.dnd.api.Attack;
-import org.gnube.dnd.api.AttackAction;
 import org.gnube.dnd.api.AttackDamage;
 import org.gnube.dnd.api.PlayerCharacter;
 import org.gnube.dnd.api.Weapon;
+import org.gnube.dnd.api.WeaponAttackAction;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -38,20 +38,20 @@ public class WeaponAttackTest {
 
     @Test
     public void testAttack() {
-        AttackAction longsword1h = (AttackAction) pc.actions().get("Longsword (1h)");
+        WeaponAttackAction longsword1h = (WeaponAttackAction) pc.getActions().get("Longsword (1h)");
         performAttack(longsword1h);
-        AttackAction longsword2h = (AttackAction)pc.actions().get("Longsword (2h)");
+        WeaponAttackAction longsword2h = (WeaponAttackAction)pc.getActions().get("Longsword (2h)");
         performAttack(longsword2h);
-        AttackAction longswordOff = (AttackAction)pc.actions().get("Longsword (Off)");
+        WeaponAttackAction longswordOff = (WeaponAttackAction)pc.getActions().get("Longsword (Off)");
         performAttack(longswordOff);
-        AttackAction bow = (AttackAction) pc.actions().get("Longbow");
+        WeaponAttackAction bow = (WeaponAttackAction) pc.getActions().get("Longbow");
         performAttack(bow);
     }
 
-    void performAttack(AttackAction action) {
+    void performAttack(WeaponAttackAction action) {
         Attack attack = action.attack();
         System.out.println(action.getName() + " attack[" + attack.getTotal().getTotal() + "]: " + attack.getDice() + "=" + attack.getTotal().getDescription());
-        AttackDamage damage = action.damage(attack.isCrit());
+        AttackDamage damage = action.weaponDamage(attack.isCrit());
         System.out.println("damage: " + (damage.isCrit() ? "*" :"") + damage.getTotal());
         for (AttackDamage.Damage dmg : damage.getDamage()) {
             System.out.println("\t" + (dmg.getName() == null ? "" : dmg.getName()) + " " + dmg.getType() + "[" + dmg.getTotal() + "]: " + dmg.getExpression() + " = " + dmg.getDescription());

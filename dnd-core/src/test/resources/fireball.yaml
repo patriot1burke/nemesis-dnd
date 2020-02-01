@@ -1,0 +1,6 @@
+name: Fireball
+slot: 3
+damageType: Fire
+damage: 8d6
+save: DEX
+dicePerSlot: 1d6

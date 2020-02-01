@@ -1,0 +1,6 @@
+name: Chromatic Orb
+slot: 1
+spellAttack: true
+damageType: choice
+damage: 3d8
+dicePerSlot: 1d8
