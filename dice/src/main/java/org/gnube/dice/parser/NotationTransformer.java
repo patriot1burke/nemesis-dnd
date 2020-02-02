@@ -68,7 +68,13 @@ public class NotationTransformer extends DiceNotationBaseListener {
     public void exitDice(DiceNotationParser.DiceContext ctx) {
         int quantity = Integer.parseInt(ctx.quantity.getText());
         int sides = Integer.parseInt(ctx.sides.getText());
-        nodes.push(new Dice(quantity, sides));
+        if (ctx.keep != null) {
+            nodes.push(Dice.keep(quantity, sides, Integer.parseInt(ctx.keep.getText())));
+        } else if (ctx.drop != null) {
+            nodes.push(Dice.drop(quantity, sides, Integer.parseInt(ctx.drop.getText())));
+        } else {
+            nodes.push(new Dice(quantity, sides));
+        }
     }
 
     @Override

@@ -30,6 +30,11 @@ DSEPARATOR
    ('d' | 'D')
 ;
 
+KSEPARATOR
+:
+   ('k' | 'K')
+;
+
 DIGIT
 :
    ('0'..'9')+

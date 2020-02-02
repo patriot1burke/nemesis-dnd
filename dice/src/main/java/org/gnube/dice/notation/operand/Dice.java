@@ -27,10 +27,32 @@ public final class Dice implements DiceExpression {
 
     int quantity;
     int sides;
+    int keep;
+    int drop;
 
     public Dice(int quantity, int sides) {
         this.quantity = quantity;
         this.sides = sides;
+    }
+
+    public static Dice keep(int quantity, int sides, int keep) {
+        Dice dice = new Dice(quantity, sides);
+        dice.keep = keep;
+        return dice;
+    }
+
+    public static Dice drop(int quantity, int sides, int drop) {
+        Dice dice = new Dice(quantity, sides);
+        dice.drop = drop;
+        return dice;
+    }
+
+    public int getKeep() {
+        return keep;
+    }
+
+    public int getDrop() {
+        return drop;
     }
 
     public int getQuantity() {
@@ -43,7 +65,10 @@ public final class Dice implements DiceExpression {
 
     @Override
     public final String getExpression() {
-        return String.format("%dd%d", quantity, sides);
+        String expression = quantity + "d" + sides;
+        if (keep > 0) expression += "k" + keep;
+        else if (drop > 0) expression += "d" + drop;
+        return expression;
     }
 
     @Override

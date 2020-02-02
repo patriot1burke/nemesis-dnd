@@ -5,7 +5,6 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 public class DiceRollerTest {
-
     class MaxRoller extends DiceRoller {
         @Override
         protected int rollDie(int sides) {
@@ -25,6 +24,20 @@ public class DiceRollerTest {
         }
     }
 
+    class MaxMinRoller extends MaxRoller {
+        boolean minRoll;
+        @Override
+        protected int rollDie(int sides) {
+            if (minRoll) {
+                minRoll = false;
+                return 1;
+            } else {
+                minRoll = true;
+                return sides;
+            }
+        }
+    }
+
     @Test
     public void testOne() {
         DiceRoller.Total total = new DiceRoller().roll("1d20-5+2d6");
@@ -32,6 +45,42 @@ public class DiceRollerTest {
         System.out.println("exp: " + total.getDescription());
 
     }
+
+    @Test
+    public void drop() {
+        DiceRoller.Total total = new DiceRoller().roll("4d6d1");
+        System.out.println("total: " + total.getTotal());
+        System.out.println("exp: " + total.getDescription());
+    }
+
+    @Test
+    public void testDrop() {
+        DiceRoller.Total total = new MaxMinRoller().roll("4d6d1");
+        Assert.assertEquals(13, total.getTotal());
+        Assert.assertEquals("(1+6+6 drop[1])", total.getDescription());
+        total = new MaxMinRoller().roll("4d6d2");
+        Assert.assertEquals(12, total.getTotal());
+        Assert.assertEquals("(6+6 drop[1,1])", total.getDescription());
+    }
+
+    @Test
+    public void keep() {
+        DiceRoller.Total total = new DiceRoller().roll("4d6k3");
+        System.out.println("total: " + total.getTotal());
+        System.out.println("exp: " + total.getDescription());
+    }
+
+    @Test
+    public void testKeep() {
+        DiceRoller.Total total = new MaxMinRoller().roll("4d6k3");
+        Assert.assertEquals(13, total.getTotal());
+        Assert.assertEquals("(1+6+6 drop[1])", total.getDescription());
+        total = new MaxMinRoller().roll("4d6k2");
+        Assert.assertEquals(12, total.getTotal());
+        Assert.assertEquals("(6+6 drop[1,1])", total.getDescription());
+    }
+
+
 
     @Test
     public void testMixed() {

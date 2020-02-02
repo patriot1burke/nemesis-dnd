@@ -51,7 +51,7 @@ atom
 
 dice
 :
-   quantity=DIGIT DSEPARATOR sides=DIGIT
+   quantity=DIGIT DSEPARATOR sides=DIGIT ((KSEPARATOR keep=DIGIT) | DSEPARATOR drop=DIGIT)?
 ;
 
 number

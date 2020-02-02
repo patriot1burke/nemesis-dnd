@@ -13,6 +13,7 @@ import org.gnube.dice.notation.operation.Negate;
 import org.gnube.dice.notation.operation.Subtraction;
 import org.gnube.dice.parser.NotationTransformer;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -56,20 +57,44 @@ public class DiceRoller {
     public class DiceRoll {
         Dice dice;
         List<Integer> rolls = new LinkedList<>();
+        List<Integer> dropped = new LinkedList<>();
         int total;
         String description;
 
         public DiceRoll(Dice dice) {
             this.dice = dice;
-            this.description = "(";
             for (int i = 0; i < dice.getQuantity(); i++) {
                 int roll = rollDie(dice.getSides());
                 rolls.add(roll);
-                total += roll;
-                if (i > 0) {
-                    this.description += "+";
+            }
+            Collections.sort(rolls);
+            if (dice.getDrop() > 0) {
+                for (int i = 0; i < dice.getDrop(); i++) {
+                    dropped.add(rolls.remove(0));
                 }
+            } else if (dice.getKeep() > 0) {
+                int drop = rolls.size() - dice.getKeep();
+                for (int i = 0; i < drop; i++) {
+                    dropped.add(rolls.remove(0));
+                }
+            }
+            this.description = "(";
+            boolean first = true;
+            for (Integer roll : rolls) {
+                total += roll;
+                if (first) first = false;
+                else this.description += "+";
                 this.description += Integer.toString(roll);
+            }
+            if (dropped.size() > 0) {
+                this.description += " drop[";
+                first = true;
+                for (Integer roll : dropped) {
+                    if (first) first = false;
+                    else this.description += ",";
+                    this.description += Integer.toString(roll);
+                }
+                this.description += "]";
             }
             this.description += ")";
         }
@@ -80,6 +105,10 @@ public class DiceRoller {
 
         public List<Integer> getRolls() {
             return rolls;
+        }
+
+        public List<Integer> getDropped() {
+            return dropped;
         }
 
         public int getTotal() {
